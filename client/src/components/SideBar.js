@@ -2,14 +2,23 @@ import { Box, Typography, Divider, Stack } from '@mui/material'
 import React from 'react'
 import UserCard from './UserCard'
 import LogoutIcon from '@mui/icons-material/Logout';
+import { useQuery } from '@apollo/client';
+import { GET_ALL_USERS } from '../graphql/queries';
 
 function SideBar( {setLoggedIn } ) {
 
-  const users = [
-    {id: 1, firstName: "Youssef", lastName: "Jerbi"},
-    {id: 2, firstName: "Alaa", lastName: "Jerbi"},
-    {id: 3, firstName: "Nour", lastName: "Belmabrouk"},
-  ]
+  const {loading, data, error} = useQuery(GET_ALL_USERS)
+
+
+
+  if (loading) {
+    return (<Typography variant="h6">Loading chat...</Typography>)
+  }
+
+  if (error) {
+    console.log(error.message)
+  }
+
   return (
     <Box 
       backgroundColor="#f7f7f7"
@@ -25,7 +34,7 @@ function SideBar( {setLoggedIn } ) {
           }}/>
         </Stack>
         <Divider />
-        { users.map(item => {
+        { data.users.map(item => {
             return (<UserCard ket={item.id} item={item}/>)
         })}
 
