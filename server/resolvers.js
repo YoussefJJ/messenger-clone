@@ -1,9 +1,15 @@
 import pc from '@prisma/client'
-import {AuthenticationError, ForbiddenError} from 'apollo-server'
+import {AuthenticationError, ForbiddenError} from 'apollo-server-express'
 import bcrypt from 'bcryptjs'
 import jwt from 'jsonwebtoken'
+import {PubSub} from 'graphql-subscriptions'
+
+
+const pubsub = new PubSub()
 
 const prisma = new pc.PrismaClient()
+
+const MESSAGE_ADDED = 'MESSAGE_ADDED'
 
 const resolvers = {
     Query: {
@@ -80,7 +86,22 @@ const resolvers = {
                     senderId: userId
                 }
             })
+
+            pubsub.publish(MESSAGE_ADDED, {
+                newMessage: message
+            })
             return message
+        }
+    },
+
+    Subscription: {
+        newMessage: {
+            subscribe: (_, __, {userId}) => {
+                if (!userId) {
+                    throw new ForbiddenError("You must be logged in.")
+                }
+                return pubsub.asyncIterator(MESSAGE_ADDED)
+            }
         }
     }
 }
