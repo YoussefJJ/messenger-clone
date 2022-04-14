@@ -15,7 +15,7 @@ function MessageCard({text, date, direction}) {
             >{text}</Typography>
             <Typography 
             variant='caption' 
-            >{date}</Typography>
+            >{new Date(date).toLocaleTimeString()}</Typography>
         </Box>
       </Box>
 

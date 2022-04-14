@@ -1,43 +1,32 @@
-import { Box, AppBar, Toolbar, Avatar, Typography, TextField } from '@mui/material'
+import { useMutation, useQuery } from '@apollo/client'
+import { Box, AppBar, Toolbar, Avatar, Typography, TextField, Stack } from '@mui/material'
+import SendIcon from '@mui/icons-material/Send';
 import React, {useState, useEffect} from 'react'
 import { useParams } from 'react-router-dom'
+import { GET_MSG } from '../graphql/queries'
 import MessageCard from './MessageCard'
+import { SEND_MSG } from '../graphql/mutations';
 
 function ChatScreen() {
 
   const {id, name } = useParams()
+  const [text, setText] = useState("")
+  const [messages, setMessages] = useState([])
 
+  const {data, loading, error} = useQuery(GET_MSG, {
+    variables: {
+      receiverId: +id
+    },
+    onCompleted: (data) => {
+      setMessages(data.messagesByUser)
+    }
+  })
 
-  const getAllMessages = () => {
-    fetch('http://localhost:4000/', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjQsImlhdCI6MTY0ODk5NzM4OX0._ermi9LSQkHPL8_rfIEXCq29DWlkmX9wYwMurUQauUQ"
-      },
-      body: JSON.stringify({
-        query: `
-          query MessagesByUser($receiverId: Int) {
-            messagesByUser(receiverId: $receiverId) {
-              id
-              text
-              receiverId
-              senderId
-              createdAt
-            }
-          }
-        `,
-        variables: {
-          receiverId: 2
-        }
-    })
-    }).then(res => res.json())
-    .then(data => {
-      console.log(data)
-      //update state
-
-    })
-  }
+  const [sendMessage] = useMutation(SEND_MSG, {
+    onCompleted: (data) => {
+      setMessages([...messages, data.createMessage])
+    }
+  })
   
   return (
     <Box
@@ -59,11 +48,38 @@ function ChatScreen() {
         </Toolbar>
       </AppBar>
       <Box backgroundColor="#f5f5f5" height="80vh" padding="10px" sx={{overflowY: "auto" }}>
-        <MessageCard text="Hi Youssef" date="123" direction="start"/>
-        <MessageCard text="Hi Youssef" date="123" direction="end"/>
-        <MessageCard text="Hi Youssef" date="123" direction="start"/>
+        {
+          loading ? <Typography variant="h6">Loading chat...</Typography> : 
+          messages.map(msg => {
+            return (<MessageCard 
+                      key={msg.createdAt} 
+                      text={msg.text} 
+                      date={msg.createdAt} 
+                      direction={msg.receiverId === +id ? "end" : "start"}/>)
+          })
+        }
+
       </Box>
-      <TextField placeholder='Enter a message' variant='standard' fullWidth multiline rows={2}/>
+      <Stack direction="row">
+        <TextField 
+        placeholder='Enter a message' 
+        variant='standard' 
+        fullWidth 
+        multiline 
+        rows={2}
+        value={text}
+        onChange={e => setText(e.target.value)}/>
+        <SendIcon fontSize='large' onClick={() => {
+          sendMessage({
+            variables: {
+              receiverId: +id,
+              text
+            }
+          })
+          setText("")
+        }}/>
+      </Stack>
+
     </Box>
   )
 }
