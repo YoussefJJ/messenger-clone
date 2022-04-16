@@ -18,14 +18,15 @@ const resolvers = {
             if (!userId) {
                 throw new ForbiddenError("You must be logged in.")
             }
+            console.log(userId)
             const users = await prisma.user.findMany({
                 orderBy: {
                     createdAt: 'desc'
                 },
                 where: {
-                id: {
-                    not: userId
-                }
+                    id: {
+                        not: userId
+                    }
             }}) 
             return users
         },
@@ -86,7 +87,6 @@ const resolvers = {
                     senderId: userId
                 }
             })
-
             pubsub.publish(MESSAGE_ADDED, {
                 newMessage: message
             })
@@ -96,12 +96,7 @@ const resolvers = {
 
     Subscription: {
         newMessage: {
-            subscribe: (_, __, {userId}) => {
-                if (!userId) {
-                    throw new ForbiddenError("You must be logged in.")
-                }
-                return pubsub.asyncIterator(MESSAGE_ADDED)
-            }
+            subscribe: () => pubsub.asyncIterator(MESSAGE_ADDED)
         }
     }
 }

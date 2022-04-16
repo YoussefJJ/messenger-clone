@@ -19,6 +19,10 @@ function SideBar( {setLoggedIn } ) {
     console.log(error.message)
   }
 
+  // if (data) {
+  //   console.log(data)
+  // }
+
   return (
     <Box 
       backgroundColor="#f7f7f7"
@@ -35,7 +39,7 @@ function SideBar( {setLoggedIn } ) {
         </Stack>
         <Divider />
         { data.users.map(item => {
-            return (<UserCard ket={item.id} item={item}/>)
+            return (<UserCard key={item.id} item={item}/>)
         })}
 
     </Box>

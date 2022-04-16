@@ -11,16 +11,19 @@ import { WebSocketServer } from 'ws';
 import { useServer } from 'graphql-ws/lib/use/ws';
 import { makeExecutableSchema } from '@graphql-tools/schema'
 
+
+
 // create express and HTTP server
 const app = express();
 const httpServer = createServer(app);
 
 const context = ({req}) => {
     const {authorization} = req.headers
+    console.log(authorization)
     if (authorization) {
         const {userId} = jwt.verify(authorization, process.env.JWT_SECRET)
         return {userId}
-        }
+    }
 }
 
 

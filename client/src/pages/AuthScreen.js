@@ -2,6 +2,8 @@ import React, {useState, useRef} from 'react'
 import { Box, Stack, Typography, Button, TextField, Card, CircularProgress, Alert } from '@mui/material'
 import { useMutation } from '@apollo/client'
 import { SIGN_UP_USER, LOGIN_USER } from '../graphql/mutations'
+import { useApolloClient } from "@apollo/client";
+
 
 const  AuthScreen = ({ setLoggedIn }) =>  {
 
@@ -9,12 +11,15 @@ const  AuthScreen = ({ setLoggedIn }) =>  {
     const [formData, setformData] = useState({})
     const authForm = useRef(null)
 
+    const client = useApolloClient();
+
     const [signupUser, { data: signUpData, loading: l1, error: e1 }] = useMutation(SIGN_UP_USER)
 
     const [loginUser, { data: loginData, loading: l2, error: e2 }] = useMutation(LOGIN_USER, {
         onCompleted(data) {
             localStorage.setItem('jwt', data.signinUser.token)
             setLoggedIn(true)
+            client.clearStore();
         }
     })
 
