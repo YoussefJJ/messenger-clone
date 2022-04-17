@@ -10,7 +10,7 @@ function UserCard({item: {firstName, lastName, id}}) {
       className="usercard"
       direction="row"
       spacing={2}
-      sx={{py: 1}}
+      sx={{py: 1, px: 1, borderRadius: '3px'}}
       onClick={() => navigate(`/${id}/${firstName} ${lastName}`)}
     >
       <Avatar

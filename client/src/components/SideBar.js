@@ -35,11 +35,17 @@ function SideBar( {setLoggedIn } ) {
       padding="10px"
     >
         <Stack direction="row" justifyContent="space-between">
-          <Typography variant='h6'>Chat</Typography>
-          <LogoutIcon onClick={() => {
-            localStorage.removeItem('jwt')
-            setLoggedIn(false)
-          }}/>
+          <Typography variant='h6'>Messaging App</Typography>
+          <Stack 
+            className='logout-icon'
+            onClick={() => {
+              localStorage.removeItem('jwt')
+              setLoggedIn(false)
+            }}
+          >
+            <LogoutIcon
+              />
+          </Stack>
         </Stack>
         <Divider />
         { data.users.map(item => {

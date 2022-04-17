@@ -2,3 +2,12 @@
     background-color: white;
     cursor: pointer;
 }
+.logout-icon {
+    padding: 5px;
+    border-radius: 0.2em;
+}
+
+.logout-icon:hover {
+    background-color: white;
+    cursor: pointer;
+}

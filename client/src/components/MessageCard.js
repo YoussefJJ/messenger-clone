@@ -7,15 +7,29 @@ function MessageCard({text, date, direction}) {
         display="flex"
         justifyContent={direction}
       >
-        <Box>
+        <Box sx={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: direction === "start" ? 'flex-start' : 'flex-end',
+        }}>
             <Typography 
+            sx={{
+              borderRadius: '5px',
+            }}
             variant='subtitle2' 
-            backgroundColor="white"
+            backgroundColor={direction == "start" ? "white" : "#64b362"}
+            color={direction == "start" ? "black" : "white"}
             padding="5px"
             >{text}</Typography>
             <Typography 
             variant='caption' 
-            >{new Date(date).toLocaleTimeString()}</Typography>
+            title={new Date(date).toLocaleString()}
+            >{new Date(date).toLocaleTimeString(
+              navigator.language,
+              {
+                hour: '2-digit',
+                minute: '2-digit',
+            })}</Typography>
         </Box>
       </Box>
 
