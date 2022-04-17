@@ -1,15 +1,18 @@
-import React, {useState, useRef} from 'react'
+import React, {useState, useRef, useContext} from 'react'
 import { Box, Stack, Typography, Button, TextField, Card, CircularProgress, Alert } from '@mui/material'
 import { useMutation } from '@apollo/client'
 import { SIGN_UP_USER, LOGIN_USER } from '../graphql/mutations'
 import { useApolloClient } from "@apollo/client";
+import AuthContext from '../context/AuthContext';
 
 
-const  AuthScreen = ({ setLoggedIn }) =>  {
+const  AuthScreen = () =>  {
 
     const [showLogin, setshowLogin] = useState(true)
     const [formData, setformData] = useState({})
     const authForm = useRef(null)
+
+    const {setAuthenticated} = useContext(AuthContext)
 
     const client = useApolloClient();
 
@@ -19,7 +22,7 @@ const  AuthScreen = ({ setLoggedIn }) =>  {
         onCompleted(data) {
             localStorage.setItem('jwt', data.signinUser.token)
             client.clearStore().then(() => {
-                setLoggedIn(true)
+                setAuthenticated(true)
             })
         }
     })

@@ -1,17 +1,20 @@
 import { Box, Typography, Divider, Stack } from '@mui/material'
-import React from 'react'
+import React, { useContext } from 'react'
 import UserCard from './UserCard'
 import LogoutIcon from '@mui/icons-material/Logout';
 import { useQuery } from '@apollo/client';
 import { GET_ALL_USERS } from '../graphql/queries';
+import AuthContext from '../context/AuthContext';
 
-function SideBar( {setLoggedIn } ) {
+function SideBar() {
 
   const {loading, data, error} = useQuery(GET_ALL_USERS, {
     onCompleted: (data) => {
       console.log(data)
     }
   })
+
+  const {setAuthenticated} = useContext(AuthContext)
 
   if (loading) {
     return (<Typography variant="h6">Loading chat...</Typography>)
@@ -40,7 +43,7 @@ function SideBar( {setLoggedIn } ) {
             className='logout-icon'
             onClick={() => {
               localStorage.removeItem('jwt')
-              setLoggedIn(false)
+              setAuthenticated(false)
             }}
           >
             <LogoutIcon
