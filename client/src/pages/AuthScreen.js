@@ -18,8 +18,9 @@ const  AuthScreen = ({ setLoggedIn }) =>  {
     const [loginUser, { data: loginData, loading: l2, error: e2 }] = useMutation(LOGIN_USER, {
         onCompleted(data) {
             localStorage.setItem('jwt', data.signinUser.token)
-            setLoggedIn(true)
-            client.clearStore();
+            client.clearStore().then(() => {
+                setLoggedIn(true)
+            })
         }
     })
 

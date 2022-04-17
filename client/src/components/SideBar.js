@@ -7,9 +7,11 @@ import { GET_ALL_USERS } from '../graphql/queries';
 
 function SideBar( {setLoggedIn } ) {
 
-  const {loading, data, error} = useQuery(GET_ALL_USERS)
-
-
+  const {loading, data, error} = useQuery(GET_ALL_USERS, {
+    onCompleted: (data) => {
+      console.log(data)
+    }
+  })
 
   if (loading) {
     return (<Typography variant="h6">Loading chat...</Typography>)
@@ -18,6 +20,8 @@ function SideBar( {setLoggedIn } ) {
   if (error) {
     console.log(error.message)
   }
+
+
 
   // if (data) {
   //   console.log(data)
